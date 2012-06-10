@@ -1,6 +1,7 @@
-from django.contrib.redirects.models import Redirect
 from django import http
 from django.conf import settings
+
+from redirects_hvad.models import Redirect
 
 class RedirectFallbackMiddleware(object):
     def process_response(self, request, response):
