@@ -29,7 +29,7 @@ class RedirectFallbackMiddleware(object):
         else:
             if r.new_path == '':
                 return HttpResponseGone()
-            return redirect(r.new_path, permanent=True)
+            return redirect(r, permanent=True)
 
         # No redirect was found. Return the response.
         return response
