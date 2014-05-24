@@ -1,6 +1,9 @@
 from django.contrib import admin
-from redirects_hvad.models import Redirect
-from nani.admin import TranslatableAdmin
+
+from hvad.admin import TranslatableAdmin
+
+from .models import Redirect
+
 
 class RedirectAdmin(TranslatableAdmin):
     list_display = ('old_path',)
