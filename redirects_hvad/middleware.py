@@ -4,8 +4,13 @@ from django.http import HttpResponseGone
 from django.conf import settings
 from django.db.models import Q
 from django.shortcuts import redirect
+from django.utils import translation
 
 from redirects_hvad.models import Redirect
+
+
+# when true, requests for /language/some-url/ become /some-url/
+IGNORE_PREFIX = getattr(settings, 'REDIRECTS_IGNORE_LANGUAGE_PREFIX', False)
 
 
 class RedirectFallbackMiddleware(object):
@@ -15,7 +20,15 @@ class RedirectFallbackMiddleware(object):
         if response.status_code != 404:
             return response # No need to check for a redirect for non-404 responses.
 
-        path = request.get_full_path()
+        path = request.path
+
+        language_prefix = translation.get_language_from_path(request.path_info)
+
+        if IGNORE_PREFIX and language_prefix:
+            # strip the language prefix, by getting the length of the language
+            # and adding 2 to it (initial / and trailing /),
+            # we then slice the path
+            path = "/" + "/".join(path.split("/")[len(language_prefix):])
 
         queries = [Q(old_path__iexact=path)]
 
@@ -27,9 +40,15 @@ class RedirectFallbackMiddleware(object):
         except Redirect.DoesNotExist:
             pass
         else:
-            if r.new_path == '':
-                return HttpResponseGone()
-            return redirect(r, permanent=True)
+            language = language_prefix or translation.get_language_from_request(request)
 
-        # No redirect was found. Return the response.
+            with translation.override(language):
+                # give priority to the current language
+                new_path = r.lazy_translation_getter('new_path')
+
+            if new_path:
+                response = redirect(new_path, permanent=True)
+            else:
+                response = HttpResponseGone()
+
         return response
