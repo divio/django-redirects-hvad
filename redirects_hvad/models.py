@@ -36,7 +36,7 @@ class Redirect(TranslatableModel):
         redirect_type=models.IntegerField(
             verbose_name=_('type'),
             choices=REDIRECT_TYPES,
-            default=REDIRECT_TYPES[0][0],
+            default=REDIRECT_TYPES[1][0],
             help_text=mark_safe(
                 '<a href="http://moz.com/learn/seo/redirection">http://moz.com/learn/seo/redirection</a>'
             ),

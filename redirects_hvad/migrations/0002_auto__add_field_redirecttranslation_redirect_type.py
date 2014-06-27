@@ -10,7 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'RedirectTranslation.redirect_type'
         db.add_column(u'redirects_hvad_redirect_translation', 'redirect_type',
-                      self.gf('django.db.models.fields.IntegerField')(default=301),
+                      self.gf('django.db.models.fields.IntegerField')(default=302),
                       keep_default=False)
 
 
