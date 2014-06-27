@@ -47,7 +47,8 @@ class RedirectFallbackMiddleware(object):
                 new_path = r.lazy_translation_getter('new_path')
 
             if new_path:
-                response = redirect(new_path, permanent=True)
+                permanent = r.lazy_translation_getter('redirect_type') == r.PERMANENT
+                response = redirect(new_path, permanent=permanent)
             else:
                 response = HttpResponseGone()
 
