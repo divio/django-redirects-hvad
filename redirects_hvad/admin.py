@@ -6,7 +6,7 @@ from .models import Redirect
 
 
 class RedirectAdmin(TranslatableAdmin):
-    list_filter = ('site', 'translations__redirect_type')
+    list_filter = ('site', )
     search_fields = ('old_path', 'translations__new_path')
     radio_fields = {'site': admin.VERTICAL}
     fieldsets = (
